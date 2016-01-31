@@ -33,8 +33,11 @@ package com.android.documentsui;
 import static com.android.documentsui.BaseActivity.State.ACTION_BROWSE;
 import static com.android.documentsui.BaseActivity.State.ACTION_BROWSE_ALL;
 import static com.android.documentsui.BaseActivity.State.ACTION_CREATE;
+import static com.android.documentsui.BaseActivity.State.ACTION_GET_CONTENT;
 import static com.android.documentsui.BaseActivity.State.ACTION_MANAGE;
 import static com.android.documentsui.BaseActivity.State.ACTION_STANDALONE;
+import static com.android.documentsui.BaseActivity.State.ACTION_OPEN;
+import static com.android.documentsui.BaseActivity.State.ACTION_OPEN_TREE;
 import static com.android.documentsui.BaseActivity.State.MODE_GRID;
 import static com.android.documentsui.BaseActivity.State.MODE_LIST;
 import static com.android.documentsui.BaseActivity.State.MODE_UNKNOWN;
@@ -556,10 +559,8 @@ public class DirectoryFragment extends Fragment {
             for (int i = 0; i < size; i++) {
                 if (checked.valueAt(i)) {
                     final Cursor cursor = mAdapter.getItem(checked.keyAt(i));
-                    if (cursor != null) {
-                        final DocumentInfo doc = DocumentInfo.fromDirectoryCursor(cursor);
-                        docs.add(doc);
-                    }
+                    final DocumentInfo doc = DocumentInfo.fromDirectoryCursor(cursor);
+                    docs.add(doc);
                 }
             }
 
@@ -613,16 +614,25 @@ public class DirectoryFragment extends Fragment {
                 boolean valid = false;
                 boolean hasFolder = false;
 
+                final State state = getDisplayState(DirectoryFragment.this);
                 final Cursor cursor = mAdapter.getItem(position);
                 if (cursor != null) {
                     final String docMimeType = getCursorString(cursor, Document.COLUMN_MIME_TYPE);
                     final int docFlags = getCursorInt(cursor, Document.COLUMN_FLAGS);
-                    final State state = getDisplayState(DirectoryFragment.this);
+                    switch (state.action) {
+                        case ACTION_OPEN:
+                        case ACTION_CREATE:
+                        case ACTION_GET_CONTENT:
+                        case ACTION_OPEN_TREE:
+                            valid = isDocumentEnabled(docMimeType, docFlags)
+                                    && !Document.MIME_TYPE_DIR.equals(docMimeType);
+                            break;
+                        default:
+                            valid = isDocumentEnabled(docMimeType, docFlags);
+                            break;
+                    }
                     if (Document.MIME_TYPE_DIR.equals(docMimeType)) {
                         hasFolder = true;
-                    }
-                    if (!Document.MIME_TYPE_DIR.equals(docMimeType) || state.action == ACTION_STANDALONE) {
-                        valid = isDocumentEnabled(docMimeType, docFlags);
                     }
                 }
 
@@ -1365,4 +1375,3 @@ public class DirectoryFragment extends Fragment {
         return ((DocumentsActivity) getActivity()).getCurrentExecutor();
     }
 }
-
