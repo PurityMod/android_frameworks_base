@@ -28,4 +28,7 @@
     <string name="quick_settings_expanded_hide_navigation">Hide navigation bar</string>
     <string name="quick_settings_expanded_hide_both">Hide both</string>
     <string name="accessibility_quick_settings_expanded_desktop_off">Expanded desktop disabled</string>
+
+    <!-- Sound QS Tile -->
+    <string name="quick_settings_sound_label">Sound</string>
 </resources>
