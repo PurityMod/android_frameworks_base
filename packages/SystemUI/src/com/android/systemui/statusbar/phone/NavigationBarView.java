@@ -68,6 +68,14 @@ public class NavigationBarView extends LinearLayout {
     // slippery nav bar when everything is disabled, e.g. during setup
     final static boolean SLIPPERY_WHEN_DISABLED = true;
 
+    private OnLongClickListener mPowerListener = new View.OnLongClickListener() {
+        @Override
+        public boolean onLongClick(View v) {
+            ((KeyButtonView) v).sendEvent(KeyEvent.KEYCODE_POWER, KeyEvent.FLAG_LONG_PRESS);
+            return true;
+        }
+    };
+
     final Display mDisplay;
     View mCurrentView = null;
     View[] mRotatedViews = new View[4];
@@ -833,6 +841,11 @@ public class NavigationBarView extends LinearLayout {
             homeView.setOnTouchListener(mHomeSearchActionListener);
             homeView.setLongClickable(true);
             homeView.setOnLongClickListener(mLongPressHomeListener);
+        }
+        View powerView = mCurrentView.findViewWithTag(NavbarEditor.NAVBAR_POWER);
+        if (powerView != null) {
+            powerView.setLongClickable(true);
+            powerView.setOnLongClickListener(mPowerListener);
         }
     }
 

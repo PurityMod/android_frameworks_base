@@ -227,6 +227,8 @@
     <string name="voice_assist_label">open voice assist</string>
     <!-- Click action label for accessibility for the phone button. [CHAR LIMIT=NONE] -->
     <string name="camera_label">open camera</string>
+    <!-- Content description of the power button for accessibility (not shown on the screen). [CHAR LIMIT=NONE] -->
+    <string name="accessibility_power">Power</string>
     <!-- Caption for "Recents resize" developer debug feature. [CHAR LIMIT=NONE] -->
     <string name="recents_caption_resize">Select new task layout</string>
     <!-- Button name for "Cancel". [CHAR LIMIT=NONE] -->
