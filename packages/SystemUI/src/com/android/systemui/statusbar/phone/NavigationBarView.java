@@ -125,6 +125,7 @@ public class NavigationBarView extends LinearLayout {
     private OnTouchListener mHomeSearchActionListener;
     private OnLongClickListener mRecentsBackListener;
     private OnLongClickListener mLongPressHomeListener;
+    private OnClickListener mImmersiveClickListener;
 
     private SettingsObserver mSettingsObserver;
     private boolean mShowDpadArrowKeys;
@@ -803,12 +804,13 @@ public class NavigationBarView extends LinearLayout {
 
     void setListeners(OnClickListener recentsClickListener, OnTouchListener recentsPreloadListener,
                       OnLongClickListener recentsBackListener, OnTouchListener homeSearchActionListener,
-                      OnLongClickListener longPressHomeListener) {
+                      OnLongClickListener longPressHomeListener, OnClickListener immersiveClickListener) {
         mRecentsClickListener = recentsClickListener;
         mRecentsPreloadListener = recentsPreloadListener;
         mHomeSearchActionListener = homeSearchActionListener;
         mRecentsBackListener = recentsBackListener;
         mLongPressHomeListener = longPressHomeListener;
+        mImmersiveClickListener = immersiveClickListener;
         updateButtonListeners();
     }
 
@@ -849,6 +851,10 @@ public class NavigationBarView extends LinearLayout {
         if (powerView != null) {
             powerView.setLongClickable(true);
             powerView.setOnLongClickListener(mPowerListener);
+        }
+	View immersivetView = mCurrentView.findViewWithTag(NavbarEditor.NAVBAR_EXPAND);
+        if (immersivetView != null) {
+            immersivetView.setOnClickListener(mImmersiveClickListener);
         }
     }
 

@@ -96,7 +96,6 @@ import android.view.MotionEvent;
 import android.view.ThreadedRenderer;
 import android.view.VelocityTracker;
 import android.view.View;
-import android.view.WindowManagerGlobal;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
@@ -104,6 +103,7 @@ import android.view.ViewStub;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.WindowManagerGlobal;
+import android.view.WindowManagerPolicyControl;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AccelerateInterpolator;
@@ -279,6 +279,19 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
     /** Allow some time inbetween the long press for back and recents. */
     private static final int LOCK_TO_APP_GESTURE_TOLERENCE = 200;
+
+    //Expanded Desktop	
+    private static final int STATE_ENABLE_FOR_ALL = 0;
+    private static final int STATE_USER_CONFIGURABLE = 1;
+    private final List<Integer> mExpandedDesktopList = new ArrayList<>(); 
+    private int mExpandedDesktopState;
+    private int mExpandedDesktopStyle;
+    public static final Integer[] EXPANDED_SETTINGS = new Integer[]{
+            WindowManagerPolicyControl.ImmersiveDefaultStyles.IMMERSIVE_FULL,
+            WindowManagerPolicyControl.ImmersiveDefaultStyles.IMMERSIVE_STATUS,
+            WindowManagerPolicyControl.ImmersiveDefaultStyles.IMMERSIVE_NAVIGATION
+    };
+   private ExpandedDesktopObserver mObserver;
 
     /** If true, the system is in the half-boot-to-decryption-screen state.
      * Prudently disable QS and notifications.  */
@@ -1558,6 +1571,13 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         }
     };
 
+    //Immersive Mode Button
+    private final View.OnClickListener mImmersiveClickListener = new View.OnClickListener() {
+        public void onClick(View v) {
+		expanddesktop();
+	}
+    };
+
     private void awakenDreams() {
         if (mDreamManager != null) {
             try {
@@ -1568,11 +1588,84 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         }
     }
 
+    private void expanddesktop() {
+	toggleexpand();	
+	mObserver = new ExpandedDesktopObserver(mHandler);
+    }
+
+    private void userConfigurableSettings() {
+        mExpandedDesktopState = STATE_USER_CONFIGURABLE;
+        writeValue("");
+        WindowManagerPolicyControl.reloadFromSetting(mContext);
+    }
+
+    private int getExpandedDesktopState(ContentResolver cr) {
+        String value = Settings.Global.getString(cr, Settings.Global.POLICY_CONTROL);
+        if ("immersive.full=*".equals(value)) {
+            return STATE_ENABLE_FOR_ALL;
+        }
+        return STATE_USER_CONFIGURABLE;
+    }
+
+    private void writeValue(String value) {
+        Settings.Global.putString(mContext.getContentResolver(),
+             Settings.Global.POLICY_CONTROL, value);
+    }
+
+    protected void toggleexpand() {
+	 int state = mExpandedDesktopState;
+        switch (state) {
+            case STATE_ENABLE_FOR_ALL:
+                userConfigurableSettings();
+                break;
+            case STATE_USER_CONFIGURABLE:
+                enableForAll();
+                break;
+        }
+    }
+
+    private void enableForAll() {
+        mExpandedDesktopState = STATE_ENABLE_FOR_ALL;
+        writeValue("immersive.full=*");
+    }
+
+    private int getExpandedDesktopStyle() {
+        return Settings.Global.getInt(mContext.getContentResolver(),
+                Settings.Global.POLICY_CONTROL_STYLE,
+                WindowManagerPolicyControl.ImmersiveDefaultStyles.IMMERSIVE_FULL);
+    }
+
+    private class ExpandedDesktopObserver extends ContentObserver {
+        public ExpandedDesktopObserver(Handler handler) {
+            super(handler);
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+        }
+
+        public void startObserving() {
+            mExpandedDesktopState = getExpandedDesktopState(mContext.getContentResolver());
+            mExpandedDesktopStyle = getExpandedDesktopStyle();
+            mContext.getContentResolver().registerContentObserver(
+                Settings.Global.getUriFor(Settings.Global.POLICY_CONTROL),
+                    false, mObserver);
+            mContext.getContentResolver().registerContentObserver(
+                Settings.Global.getUriFor(Settings.Global.POLICY_CONTROL_STYLE),
+                    false, mObserver);
+        }
+
+        public void endObserving() {
+            mContext.getContentResolver().unregisterContentObserver(mObserver);
+        }
+    }
+
     private void prepareNavigationBarView() {
         mNavigationBarView.reorient();
 
         mNavigationBarView.setListeners(mRecentsClickListener, mRecentsPreloadOnTouchListener,
-                mLongPressBackRecentsListener, mHomeActionListener, mLongPressHomeListener);
+                mLongPressBackRecentsListener, mHomeActionListener, mLongPressHomeListener,
+                mImmersiveClickListener);
         mAssistManager.onConfigurationChanged();
     }
 
