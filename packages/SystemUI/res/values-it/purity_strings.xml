@@ -19,4 +19,14 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- Dialog title for navigation bar button selection -->
     <string name="navbar_power_button">Pulsante spegnimento</string>
+
+    <!-- Expanded desktop tile -->
+    <string name="quick_settings_expanded_desktop_label">Desktop esteso</string>
+    <string name="quick_settings_expanded_desktop">Esteso</string>
+    <string name="quick_settings_expanded_desktop_off">Normale</string>
+    <string name="quick_settings_expanded_desktop_detail_title">Modalità desktop esteso</string>
+    <string name="quick_settings_expanded_hide_status">Nascondi status bar</string>
+    <string name="quick_settings_expanded_hide_navigation">Nascondi navbar</string>
+    <string name="quick_settings_expanded_hide_both">Nascondi entrambe</string>
+    <string name="accessibility_quick_settings_expanded_desktop_off">Desktop esteso</string>
 </resources>
