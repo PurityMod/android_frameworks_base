@@ -53,14 +53,6 @@
     <string name="accessibility_dpad_left">Cursor left</string>
     <string name="accessibility_dpad_right">Cursor right</string>
 
-    <!-- Development shortcuts -->
-    <!-- Title shown in recents popup for wiping application's data -->
-    <string name="advanced_dev_option_wipe_app">Wipe app data</string>
-    <!-- Title shown in recents popup for force stopping the application -->
-    <string name="advanced_dev_option_force_stop">Force stop</string>
-    <!-- Title shown in recents popup for uninstalling the application -->
-    <string name="advanced_dev_option_uninstall">Uninstall</string>
-
     <!-- Content description of the light brightness slider (not shown on the screen). [CHAR LIMIT=NONE] -->
     <string name="accessibility_notification_brightness">Light brightness</string>
 
