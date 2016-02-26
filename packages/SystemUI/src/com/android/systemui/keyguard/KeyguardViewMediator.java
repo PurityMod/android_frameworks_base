@@ -61,8 +61,6 @@ import android.view.animation.AnimationUtils;
 
 import com.android.systemui.cm.UserContentObserver;
 import com.android.systemui.qs.tiles.LockscreenToggleTile;
-import cyanogenmod.app.Profile;
-import cyanogenmod.app.ProfileManager;
 
 import com.android.internal.policy.IKeyguardDrawnCallback;
 import com.android.internal.policy.IKeyguardExitCallback;
@@ -289,7 +287,7 @@ public class KeyguardViewMediator extends SystemUI {
     /**
      * Whether we are disabling the lock screen internally
      */
-    private boolean mInternallyDisabled = false;
+    private Boolean mInternallyDisabled = null;
 
     /**
      * we send this intent when the keyguard is dismissed.
@@ -516,8 +514,7 @@ public class KeyguardViewMediator extends SystemUI {
                     break;
                 case READY:
                     synchronized (this) {
-                        if ((mInternallyDisabled || isProfileDisablingKeyguard())
-                                && !mUpdateMonitor.isSimPinSecure()) {
+                        if (mInternallyDisabled && !mUpdateMonitor.isSimPinSecure()) {
                             hideLocked();
                         } else if (mShowing) {
                             resetStateLocked();
@@ -693,12 +690,18 @@ public class KeyguardViewMediator extends SystemUI {
                         getPersistedDefaultOldSetting() ? 1 : 0,
                         UserHandle.USER_CURRENT) == 0;
 
-                synchronized (KeyguardViewMediator.this) {
-                    if (mKeyguardBound) {
-                        if (newDisabledState != mInternallyDisabled) {
-                            // it was updated,
-                            setKeyguardEnabledInternal(!newDisabledState);
+                if (mKeyguardBound) {
+                    if (mInternallyDisabled == null) {
+                        // if it's enabled on boot, don't go through the notions of
+                        // setting it enabled, as it might cause a flicker, just set the state
+                        if (newDisabledState) {
+                            setKeyguardEnabledInternal(false); // will set mInternallyDisabled
+                        } else {
+                            mInternallyDisabled = false;
                         }
+                    } else if (newDisabledState != mInternallyDisabled) {
+                        // it was updated,
+                        setKeyguardEnabledInternal(!newDisabledState);
                     }
                 }
             }
@@ -892,33 +895,13 @@ public class KeyguardViewMediator extends SystemUI {
     }
 
     private void maybeSendUserPresentBroadcast() {
-        if (mSystemReady && isKeyguardDisabled(
+        if (mSystemReady && mLockPatternUtils.isLockScreenDisabled(
                 KeyguardUpdateMonitor.getCurrentUser())) {
             // Lock screen is disabled because the user has set the preference to "None".
             // In this case, send out ACTION_USER_PRESENT here instead of in
             // handleKeyguardDone()
             sendUserPresentBroadcast();
         }
-    }
-
-    private boolean isKeyguardDisabled(int userId) {
-        if (!mExternallyEnabled) {
-            if (DEBUG) Log.d(TAG, "isKeyguardDisabled: keyguard is disabled externally");
-            return true;
-        }
-        if (mLockPatternUtils.isLockScreenDisabled(userId)) {
-            if (DEBUG) Log.d(TAG, "isKeyguardDisabled: keyguard is disabled by setting");
-            return true;
-        }
-        if (mInternallyDisabled) {
-            if (DEBUG) Log.d(TAG, "isKeyguardDisabled: keyguard is disabled internally");
-            return true;
-        }
-        if (isProfileDisablingKeyguard()) {
-            if (DEBUG) Log.d(TAG, "isKeyguardDisabled: keyguard is disabled by profile");
-            return true;
-        }
-        return false;
     }
 
     /**
@@ -952,10 +935,6 @@ public class KeyguardViewMediator extends SystemUI {
      */
     public void setKeyguardEnabledInternal(boolean enabled) {
         mInternallyDisabled = !enabled;
-        if (!mUpdateMonitor.isSimPinSecure()) {
-            // disable when sim is ready
-            return;
-        }
         setKeyguardEnabled(enabled);
         if (mInternallyDisabled) {
             mNeedToReshowWhenReenabled = false;
@@ -964,12 +943,6 @@ public class KeyguardViewMediator extends SystemUI {
 
     public boolean getKeyguardEnabledInternal() {
         return !mInternallyDisabled;
-    }
-
-    public boolean isProfileDisablingKeyguard() {
-        final Profile activeProfile = ProfileManager.getInstance(mContext).getActiveProfile();
-        return activeProfile != null
-                && activeProfile.getScreenLockMode().getValue() == Profile.LockMode.DISABLE;
     }
 
     /**
@@ -1000,7 +973,7 @@ public class KeyguardViewMediator extends SystemUI {
                 // hiding keyguard that is showing, remember to reshow later
                 if (DEBUG) Log.d(TAG, "remembering to reshow, hiding keyguard, "
                         + "disabling status bar expansion");
-                mNeedToReshowWhenReenabled = !isProfileDisablingKeyguard();
+                mNeedToReshowWhenReenabled = true;
                 updateInputRestrictedLocked();
                 hideLocked();
             } else if (enabled && mNeedToReshowWhenReenabled) {
@@ -1218,7 +1191,7 @@ public class KeyguardViewMediator extends SystemUI {
             return;
         }
 
-        if (isKeyguardDisabled(KeyguardUpdateMonitor.getCurrentUser())
+        if (mLockPatternUtils.isLockScreenDisabled(KeyguardUpdateMonitor.getCurrentUser())
                 && !lockedOrMissing) {
             if (DEBUG) Log.d(TAG, "doKeyguard: not showing because lockscreen is off");
             // update state
@@ -1250,7 +1223,15 @@ public class KeyguardViewMediator extends SystemUI {
         DevicePolicyManager dpm = (DevicePolicyManager)
                 mContext.getSystemService(Context.DEVICE_POLICY_SERVICE);
         if (dpm != null) {
-            return dpm.requireSecureKeyguard();
+            int passwordQuality = dpm.getPasswordQuality(null);
+            switch (passwordQuality) {
+                case DevicePolicyManager.PASSWORD_QUALITY_ALPHABETIC:
+                case DevicePolicyManager.PASSWORD_QUALITY_ALPHANUMERIC:
+                case DevicePolicyManager.PASSWORD_QUALITY_COMPLEX:
+                case DevicePolicyManager.PASSWORD_QUALITY_NUMERIC:
+                case DevicePolicyManager.PASSWORD_QUALITY_SOMETHING:
+                    return true;
+            }
         }
         return false;
     }
@@ -1548,10 +1529,6 @@ public class KeyguardViewMediator extends SystemUI {
 
     private void playSound(int soundId) {
         if (soundId == 0) return;
-        if (mInternallyDisabled) {
-            Log.d(TAG, "suppressing lock screen sounds because it is disabled");
-            return;
-        }
         final ContentResolver cr = mContext.getContentResolver();
         if (Settings.System.getInt(cr, Settings.System.LOCKSCREEN_SOUNDS_ENABLED, 1) == 1) {
 

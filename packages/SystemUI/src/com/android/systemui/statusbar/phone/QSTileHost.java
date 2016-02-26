@@ -60,7 +60,6 @@ import com.android.systemui.qs.tiles.LocationTile;
 import com.android.systemui.qs.tiles.LockscreenToggleTile;
 import com.android.systemui.qs.tiles.NfcTile;
 import com.android.systemui.qs.tiles.PerfProfileTile;
-import com.android.systemui.qs.tiles.ProfilesTile;
 import com.android.systemui.qs.tiles.RotationLockTile;
 import com.android.systemui.qs.tiles.ScreenTimeoutTile;
 import com.android.systemui.qs.tiles.SoundTile;
@@ -355,7 +354,6 @@ public class QSTileHost implements QSTile.Host, Tunable {
         else if (tileSpec.equals("adb_network")) return new AdbOverNetworkTile(this);
         else if (tileSpec.equals("compass")) return new CompassTile(this);
         else if (tileSpec.equals("nfc")) return new NfcTile(this);
-        else if (tileSpec.equals("profiles")) return new ProfilesTile(this);
         else if (tileSpec.equals("sync")) return new SyncTile(this);
         else if (tileSpec.equals("volume_panel")) return new VolumeTile(this);
         else if (tileSpec.equals("usb_tether")) return new UsbTetherTile(this);
@@ -451,7 +449,6 @@ public class QSTileHost implements QSTile.Host, Tunable {
         else if (spec.equals("adb_network")) return R.string.quick_settings_network_adb_label;
         else if (spec.equals("compass")) return R.string.quick_settings_compass_label;
         else if (spec.equals("nfc")) return R.string.quick_settings_nfc_label;
-        else if (spec.equals("profiles")) return R.string.quick_settings_profiles;
         else if (spec.equals("sync")) return R.string.quick_settings_sync_label;
         else if (spec.equals("volume_panel")) return R.string.quick_settings_volume_panel_label;
         else if (spec.equals("usb_tether")) return R.string.quick_settings_usb_tether_label;
@@ -484,7 +481,6 @@ public class QSTileHost implements QSTile.Host, Tunable {
         else if (spec.equals("adb_network")) return R.drawable.ic_qs_network_adb_on;
         else if (spec.equals("compass")) return R.drawable.ic_qs_compass_on;
         else if (spec.equals("nfc")) return R.drawable.ic_qs_nfc_on;
-        else if (spec.equals("profiles")) return R.drawable.ic_qs_profiles_on;
         else if (spec.equals("sync")) return R.drawable.ic_qs_sync_on;
         else if (spec.equals("volume_panel")) return R.drawable.ic_qs_volume_panel;
         else if (spec.equals("usb_tether")) return R.drawable.ic_qs_usb_tether_on;
