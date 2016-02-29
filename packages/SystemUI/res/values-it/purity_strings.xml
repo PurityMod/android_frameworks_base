@@ -29,4 +29,10 @@
     <string name="quick_settings_expanded_hide_navigation">Nascondi navbar</string>
     <string name="quick_settings_expanded_hide_both">Nascondi entrambe</string>
     <string name="accessibility_quick_settings_expanded_desktop_off">Desktop esteso</string>
+
+    <!-- Sound QS Tile --> 
+    <string name="quick_settings_sound_label">Suono</string>
+    <string name="quick_settings_sound_ring">Suoneria</string>
+    <string name="quick_settings_sound_vibrate">Vibrazione</string>
+    <string name="quick_settings_sound_silent">Silenzioso</string>
 </resources>
