@@ -21,7 +21,7 @@
         android:showAsAction="always" />
     <item
         android:id="@+id/menu_copy"
-        android:icon="@drawable/ic_menu_copy"
+        android:icon="@*android:drawable/ic_menu_copy_material"
         android:title="@android:string/copy"
         android:showAsAction="always" />
     <item
@@ -31,7 +31,7 @@
         android:showAsAction="always" />
     <item
         android:id="@+id/menu_share"
-        android:icon="@drawable/ic_menu_share"
+        android:icon="@*android:drawable/ic_menu_share_material"
         android:title="@string/menu_share"
         android:showAsAction="always" />
     <item
