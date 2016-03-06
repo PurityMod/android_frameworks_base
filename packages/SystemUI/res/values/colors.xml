@@ -145,6 +145,6 @@
     <color name="volume_settings_icon_color">#7fffffff</color>
     <color name="volume_slider_inactive">#FFB0BEC5</color><!-- blue grey 200 -->
 
-    <color name="clear_recent_button_color">#ff009688</color>
-    <color name="clear_recent_button_ripple">#B39DDB</color>
+    <color name="fab_color">#ff009688</color>
+    <color name="floating_action_button_icon_color">#B39DDB</color>
 </resources>

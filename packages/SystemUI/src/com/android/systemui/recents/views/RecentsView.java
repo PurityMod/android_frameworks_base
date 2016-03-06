@@ -350,8 +350,8 @@ public class RecentsView extends FrameLayout implements TaskStackView.TaskStackV
             FrameLayout.LayoutParams params = (FrameLayout.LayoutParams)
                     mRecentsButton.getLayoutParams();
             params.topMargin = taskStackBounds.top;
-            params.rightMargin = width - taskStackBounds.right;
             mRecentsButton.setLayoutParams(params);
+            params.leftMargin = width - taskStackBounds.left;
         }
 
         // Measure each TaskStackView with the full width and height of the window since the
