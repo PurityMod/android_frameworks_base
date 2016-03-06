@@ -481,8 +481,8 @@ bool BootAnimation::threadLoop()
 
 bool BootAnimation::android()
 {
-    initTexture(&mAndroid[0], mAssets, "images/android-logo-mask.png");
-    initTexture(&mAndroid[1], mAssets, "images/android-logo-shine.png");
+    initTexture(&mAndroid[0], mAssets, "images/purity-logo-mask.png");
+    initTexture(&mAndroid[1], mAssets, "images/purity-logo-shine.png");
 
     // clear screen
     glShadeModel(GL_FLAT);
