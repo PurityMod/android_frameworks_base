@@ -35,4 +35,7 @@
     <string name="quick_settings_sound_ring">Suoneria</string>
     <string name="quick_settings_sound_vibrate">Vibrazione</string>
     <string name="quick_settings_sound_silent">Silenzioso</string>
+
+    <!-- Name of the headset status bar icon. -->
+    <string name="headset">Auricolari</string>
 </resources>
