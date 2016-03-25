@@ -41,6 +41,7 @@ public class NetworkTraffic extends TextView {
     private static final int KILOBYTE = 1024;
 
     private static DecimalFormat decimalFormat = new DecimalFormat("##0.#");
+
     static {
         decimalFormat.setMaximumIntegerDigits(3);
         decimalFormat.setMaximumFractionDigits(1);
@@ -84,6 +85,9 @@ public class NetworkTraffic extends TextView {
 
             if (shouldHide(rxData, txData, timeDelta)) {
                 setText("");
+                setVisibility(View.GONE);
+            } else if (!getConnectAvailable()) {
+                clearHandlerCallbacks();
                 setVisibility(View.GONE);
             } else {
                 // If bit/s convert from Bytes to bits
@@ -216,9 +220,12 @@ public class NetworkTraffic extends TextView {
         txtSizeSingle = resources.getDimensionPixelSize(R.dimen.net_traffic_single_text_size);
         txtSizeMulti = resources.getDimensionPixelSize(R.dimen.net_traffic_multi_text_size);
         Handler mHandler = new Handler();
-        SettingsObserver settingsObserver = new SettingsObserver(mHandler);
-        settingsObserver.observe();
-        updateSettings();
+
+        if (!isInEditMode()) {
+            SettingsObserver settingsObserver = new SettingsObserver(mHandler);
+            settingsObserver.observe();
+            updateSettings();
+        }
     }
 
     @Override
