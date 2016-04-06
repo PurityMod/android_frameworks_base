@@ -19,6 +19,7 @@ package com.android.systemui.statusbar.phone;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.android.systemui.R;
@@ -55,6 +56,14 @@ public class IconMerger extends LinearLayout {
         if (mClockLocation == ClockController.STYLE_CLOCK_CENTER) {
             int totalWidth = getResources().getDisplayMetrics().widthPixels;
             width = totalWidth / 2 - mIconSize * 2;
+            ViewGroup statusbar = (ViewGroup) getParent();
+            if (statusbar != null) {
+            View networkMeter = statusbar.findViewById(R.id.network_traffic);
+                if (networkMeter != null && networkMeter.getVisibility() == View.VISIBLE) {
+                int nmWidth = networkMeter.getMeasuredWidth() + 10; //10 extra pixels just to be safe
+                width -= nmWidth;
+                }
+            }
         }
         setMeasuredDimension(width - (width % mIconSize), getMeasuredHeight());
     }
