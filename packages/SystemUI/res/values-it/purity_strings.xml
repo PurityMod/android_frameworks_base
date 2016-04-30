@@ -38,4 +38,8 @@
 
     <!-- Name of the headset status bar icon. -->
     <string name="headset">Auricolari</string>
+
+    <!-- Content description of the screen off tile in quick settings (not shown on the screen). [CHAR LIMIT=NONE] -->
+    <string name="accessibility_quick_settings_screen_off">Schermo spento.</string>
+    <string name="quick_settings_screen_off_label">Schermo spento</string>
 </resources>
