@@ -61,7 +61,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginStart="@dimen/navigation_side_padding"
                 android:src="@drawable/ic_sysbar_lights_out_dot_large"
-                android:scaleType="center"
+                android:scaleType="centerInside"
                 />
             <View
                 android:layout_width="0dp"
@@ -73,7 +73,7 @@
                 android:layout_width="@dimen/navigation_key_width"
                 android:layout_height="match_parent"
                 android:src="@drawable/ic_sysbar_lights_out_dot_large"
-                android:scaleType="center"
+                android:scaleType="centerInside"
                 />
             <View
                 android:layout_width="0dp"
@@ -86,7 +86,7 @@
                 android:layout_marginEnd="@dimen/navigation_side_padding"
                 android:layout_height="match_parent"
                 android:src="@drawable/ic_sysbar_lights_out_dot_large"
-                android:scaleType="center"
+                android:scaleType="centerInside"
                 />
             <View
                 android:layout_width="0dp"
@@ -98,7 +98,7 @@
                 android:layout_width="80dp"
                 android:layout_height="match_parent"
                 android:src="@drawable/ic_sysbar_lights_out_dot_large"
-                android:scaleType="center"
+                android:scaleType="centerInside"
                 />
         </LinearLayout>
 
@@ -154,7 +154,7 @@
                 android:layout_marginTop="@dimen/navigation_side_padding"
                 android:layout_width="match_parent"
                 android:src="@drawable/ic_sysbar_lights_out_dot_large"
-                android:scaleType="center"
+                android:scaleType="centerInside"
                 />
             <View
                 android:layout_height="0dp"
@@ -166,7 +166,7 @@
                 android:layout_height="@dimen/navigation_key_width"
                 android:layout_width="match_parent"
                 android:src="@drawable/ic_sysbar_lights_out_dot_large"
-                android:scaleType="center"
+                android:scaleType="centerInside"
                 />
             <View
                 android:layout_height="0dp"
@@ -179,7 +179,7 @@
                 android:layout_marginBottom="@dimen/navigation_side_padding"
                 android:layout_width="match_parent"
                 android:src="@drawable/ic_sysbar_lights_out_dot_large"
-                android:scaleType="center"
+                android:scaleType="centerInside"
                 />
             <View
                 android:layout_width="match_parent"
@@ -191,7 +191,7 @@
                 android:layout_height="80dp"
                 android:layout_width="match_parent"
                 android:src="@drawable/ic_sysbar_lights_out_dot_large"
-                android:scaleType="center"
+                android:scaleType="centerInside"
                 />
         </LinearLayout>
 
